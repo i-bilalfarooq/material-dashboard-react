@@ -52,6 +52,8 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 // Images
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
+import smileLogo from "assets/images/smile.png";
+import smileLightLogo from "assets/images/smilelightmode.png";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -65,7 +67,6 @@ export default function App() {
     whiteSidenav,
     darkMode,
   } = controller;
-  const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
 
@@ -78,22 +79,6 @@ export default function App() {
 
     setRtlCache(cacheRtl);
   }, []);
-
-  // Open sidenav when mouse enter on mini sidenav
-  const handleOnMouseEnter = () => {
-    if (miniSidenav && !onMouseEnter) {
-      setMiniSidenav(dispatch, false);
-      setOnMouseEnter(true);
-    }
-  };
-
-  // Close sidenav when mouse leave mini sidenav
-  const handleOnMouseLeave = () => {
-    if (onMouseEnter) {
-      setMiniSidenav(dispatch, true);
-      setOnMouseEnter(false);
-    }
-  };
 
   // Change the openConfigurator state
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
@@ -154,11 +139,13 @@ export default function App() {
           <>
             <Sidenav
               color={sidenavColor}
-              brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-              brandName="Material Dashboard 2"
+              brand={
+                transparentSidenav || whiteSidenav
+                  ? smileLightLogo // Use light logo for transparent/white sidenav
+                  : smileLogo // Use dark logo for dark sidenav
+              }
+              brandName="AlSaada ERP"
               routes={routes}
-              onMouseEnter={handleOnMouseEnter}
-              onMouseLeave={handleOnMouseLeave}
             />
             <Configurator />
             {configsButton}
@@ -178,11 +165,13 @@ export default function App() {
         <>
           <Sidenav
             color={sidenavColor}
-            brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-            brandName="Material Dashboard 2"
+            brand={
+              transparentSidenav || whiteSidenav
+                ? smileLightLogo // Use light logo for transparent/white sidenav
+                : smileLogo // Use dark logo for dark sidenav
+            }
+            brandName="AlSaada ERP"
             routes={routes}
-            onMouseEnter={handleOnMouseEnter}
-            onMouseLeave={handleOnMouseLeave}
           />
           <Configurator />
           {configsButton}
@@ -196,3 +185,5 @@ export default function App() {
     </ThemeProvider>
   );
 }
+// Material Dashboard 2 React contexts
+export { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";

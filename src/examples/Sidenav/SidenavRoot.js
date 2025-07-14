@@ -26,14 +26,16 @@ export default styled(Drawer)(({ theme, ownerState }) => {
   const { xxl } = boxShadows;
   const { pxToRem, linearGradient } = functions;
 
-  let backgroundValue = darkMode
-    ? background.sidenav
-    : linearGradient(gradients.dark.main, gradients.dark.state);
-
-  if (transparentSidenav) {
+  // Fixed background calculation
+  let backgroundValue;
+  if (darkMode) {
+    backgroundValue = background.sidenav;
+  } else if (transparentSidenav) {
     backgroundValue = transparent.main;
   } else if (whiteSidenav) {
     backgroundValue = white.main;
+  } else {
+    backgroundValue = linearGradient(gradients.dark.main, gradients.dark.state);
   }
 
   // styles for the sidenav when miniSidenav={false}
@@ -59,25 +61,19 @@ export default styled(Drawer)(({ theme, ownerState }) => {
   });
 
   // styles for the sidenav when miniSidenav={true}
-  const drawerCloseStyles = () => ({
+  const miniSidenavStyles = () => ({
     background: backgroundValue,
-    transform: `translateX(${pxToRem(-320)})`,
-    transition: transitions.create("transform", {
+    width: pxToRem(80),
+    overflowX: "hidden",
+    transform: "translateX(0)",
+    transition: transitions.create(["width", "background-color"], {
       easing: transitions.easing.sharp,
       duration: transitions.duration.shorter,
     }),
 
     [breakpoints.up("xl")]: {
       boxShadow: transparentSidenav ? "none" : xxl,
-      marginBottom: transparentSidenav ? 0 : "inherit",
-      left: "0",
-      width: pxToRem(96),
-      overflowX: "hidden",
-      transform: "translateX(0)",
-      transition: transitions.create(["width", "background-color"], {
-        easing: transitions.easing.sharp,
-        duration: transitions.duration.shorter,
-      }),
+      width: pxToRem(80),
     },
   });
 
@@ -85,8 +81,7 @@ export default styled(Drawer)(({ theme, ownerState }) => {
     "& .MuiDrawer-paper": {
       boxShadow: xxl,
       border: "none",
-
-      ...(miniSidenav ? drawerCloseStyles() : drawerOpenStyles()),
+      ...(miniSidenav ? miniSidenavStyles() : drawerOpenStyles()),
     },
   };
 });
