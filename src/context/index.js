@@ -35,12 +35,6 @@ function reducer(state, action) {
     case "MINI_SIDENAV": {
       return { ...state, miniSidenav: action.value };
     }
-    case "TRANSPARENT_SIDENAV": {
-      return { ...state, transparentSidenav: action.value };
-    }
-    case "WHITE_SIDENAV": {
-      return { ...state, whiteSidenav: action.value };
-    }
     case "SIDENAV_COLOR": {
       return { ...state, sidenavColor: action.value };
     }
@@ -72,9 +66,7 @@ function reducer(state, action) {
 function MaterialUIControllerProvider({ children }) {
   const initialState = {
     miniSidenav: false,
-    transparentSidenav: false,
-    whiteSidenav: false,
-    sidenavColor: "info",
+    sidenavColor: "info", // Default is blue (info)
     transparentNavbar: true,
     fixedNavbar: true,
     openConfigurator: false,
@@ -110,8 +102,6 @@ MaterialUIControllerProvider.propTypes = {
 
 // Context module functions
 const setMiniSidenav = (dispatch, value) => dispatch({ type: "MINI_SIDENAV", value });
-const setTransparentSidenav = (dispatch, value) => dispatch({ type: "TRANSPARENT_SIDENAV", value });
-const setWhiteSidenav = (dispatch, value) => dispatch({ type: "WHITE_SIDENAV", value });
 const setSidenavColor = (dispatch, value) => dispatch({ type: "SIDENAV_COLOR", value });
 const setTransparentNavbar = (dispatch, value) => dispatch({ type: "TRANSPARENT_NAVBAR", value });
 const setFixedNavbar = (dispatch, value) => dispatch({ type: "FIXED_NAVBAR", value });
@@ -124,8 +114,6 @@ export {
   MaterialUIControllerProvider,
   useMaterialUIController,
   setMiniSidenav,
-  setTransparentSidenav,
-  setWhiteSidenav,
   setSidenavColor,
   setTransparentNavbar,
   setFixedNavbar,

@@ -31,6 +31,7 @@ import Icon from "@mui/material/Icon";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDInput from "components/MDInput";
+import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React example components
 import Breadcrumbs from "examples/Breadcrumbs";
@@ -56,7 +57,8 @@ import {
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
-  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
+  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode, sidenavColor } =
+    controller;
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
 
@@ -110,17 +112,18 @@ function DashboardNavbar({ absolute, light, isMini }) {
     </Menu>
   );
 
-  // Styles for the navbar icons
-  const iconsStyle = ({ palette: { dark, white, text }, functions: { rgba } }) => ({
-    color: () => {
-      let colorValue = light || darkMode ? white.main : dark.main;
-
-      if (transparentNavbar && !light) {
-        colorValue = darkMode ? rgba(text.main, 0.6) : text.main;
-      }
-
-      return colorValue;
-    },
+  // Styles for the navbar icons and text
+  const accentColor = (theme) =>
+    !transparentNavbar
+      ? theme.palette.gradients[sidenavColor || "info"].main
+      : theme.palette.black.main;
+  const iconsStyle = (theme) => ({
+    color: accentColor(theme),
+    transition: "color 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
+  });
+  const textStyle = (theme) => ({
+    color: accentColor(theme),
+    transition: "color 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
   });
 
   return (
@@ -129,55 +132,131 @@ function DashboardNavbar({ absolute, light, isMini }) {
       color="inherit"
       sx={(theme) => navbar(theme, { transparentNavbar, absolute, light, darkMode })}
     >
-      <Toolbar sx={(theme) => navbarContainer(theme)}>
-        <MDBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
-          <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
+      <Toolbar
+        sx={(theme) => ({
+          ...navbarContainer(theme),
+          minHeight: 90,
+          maxHeight: 90,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          width: "100%",
+        })}
+      >
+        <MDBox display="flex" alignItems="center" flex="0 0 auto">
+          <IconButton
+            size="small"
+            disableRipple
+            color="inherit"
+            sx={iconsStyle}
+            onClick={handleMiniSidenav}
+            style={{ marginRight: 16 }}
+          >
+            <Icon sx={iconsStyle} fontSize="medium">
+              {miniSidenav ? "menu_open" : "menu"}
+            </Icon>
+          </IconButton>
+          <Breadcrumbs
+            icon="home"
+            title={route[route.length - 1] ? route[route.length - 1] : ""}
+            route={route}
+            light={light}
+            color={transparentNavbar ? "black" : sidenavColor}
+          />
         </MDBox>
-        {isMini ? null : (
-          <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
-            <MDBox pr={1}>
-              <MDInput label="Search here" />
-            </MDBox>
-            <MDBox color={light ? "white" : "inherit"}>
-              <Link to="/authentication/sign-in/basic">
-                <IconButton sx={navbarIconButton} size="small" disableRipple>
-                  <Icon sx={iconsStyle}>account_circle</Icon>
-                </IconButton>
-              </Link>
-              <IconButton
-                size="small"
-                disableRipple
-                color="inherit"
-                sx={navbarMobileMenu}
-                onClick={handleMiniSidenav}
-              >
-                <Icon sx={iconsStyle} fontSize="medium">
-                  {miniSidenav ? "menu_open" : "menu"}
-                </Icon>
+        <MDTypography
+          variant="h4"
+          fontWeight="bold"
+          sx={textStyle}
+          style={{
+            flex: 1,
+            textAlign: "center",
+            minWidth: 0,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            marginLeft: 16,
+            marginRight: 16,
+            textTransform: "uppercase",
+          }}
+        >
+          {route[route.length - 1] &&
+            (
+              route[route.length - 1].charAt(0).toUpperCase() + route[route.length - 1].slice(1)
+            ).toUpperCase()}
+        </MDTypography>
+        {!isMini && (
+          <MDBox display="flex" alignItems="center" flex="0 0 auto" gap={2}>
+            <MDInput
+              label=""
+              placeholder="Search here"
+              InputProps={{
+                style: {
+                  textAlign: "center",
+                },
+              }}
+              sx={(theme) => ({
+                color: accentColor(theme),
+                borderRadius: 1,
+                height: 36,
+                minHeight: 36,
+                maxHeight: 36,
+                input: {
+                  color: accentColor(theme),
+                  transition: "color 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
+                  height: 36,
+                  minHeight: 36,
+                  maxHeight: 36,
+                  padding: "8px 12px",
+                  fontSize: 16,
+                  textAlign: "center",
+                },
+                "& .MuiOutlinedInput-root": {
+                  height: 36,
+                  minHeight: 36,
+                  maxHeight: 36,
+                  paddingTop: 0,
+                  paddingBottom: 0,
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: accentColor(theme),
+                  transition: "border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
+                },
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: accentColor(theme),
+                },
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: accentColor(theme),
+                },
+              })}
+            />
+            <Link to="/authentication/sign-in/basic">
+              <IconButton sx={iconsStyle} size="small" disableRipple>
+                <Icon sx={iconsStyle}>account_circle</Icon>
               </IconButton>
-              <IconButton
-                size="small"
-                disableRipple
-                color="inherit"
-                sx={navbarIconButton}
-                onClick={handleConfiguratorOpen}
-              >
-                <Icon sx={iconsStyle}>settings</Icon>
-              </IconButton>
-              <IconButton
-                size="small"
-                disableRipple
-                color="inherit"
-                sx={navbarIconButton}
-                aria-controls="notification-menu"
-                aria-haspopup="true"
-                variant="contained"
-                onClick={handleOpenMenu}
-              >
-                <Icon sx={iconsStyle}>notifications</Icon>
-              </IconButton>
-              {renderMenu()}
-            </MDBox>
+            </Link>
+            <IconButton
+              size="small"
+              disableRipple
+              color="inherit"
+              sx={iconsStyle}
+              onClick={handleConfiguratorOpen}
+            >
+              <Icon sx={iconsStyle}>settings</Icon>
+            </IconButton>
+            <IconButton
+              size="small"
+              disableRipple
+              color="inherit"
+              sx={iconsStyle}
+              aria-controls="notification-menu"
+              aria-haspopup="true"
+              variant="contained"
+              onClick={handleOpenMenu}
+            >
+              <Icon sx={iconsStyle}>notifications</Icon>
+            </IconButton>
+            {renderMenu()}
           </MDBox>
         )}
       </Toolbar>

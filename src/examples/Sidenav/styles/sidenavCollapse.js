@@ -14,7 +14,7 @@ Coded by www.creative-tim.com
 */
 function collapseItem(theme, ownerState) {
   const { palette, transitions, breakpoints, boxShadows, borders, functions } = theme;
-  const { active, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = ownerState;
+  const { active, darkMode, sidenavColor, miniSidenav } = ownerState;
 
   const { white, transparent, dark, grey, gradients } = palette;
   const { md } = boxShadows;
@@ -23,22 +23,23 @@ function collapseItem(theme, ownerState) {
 
   return {
     background: active
-      ? linearGradient(gradients[sidenavColor].main, gradients[sidenavColor].state)
+      ? linearGradient(
+          gradients[sidenavColor || "dark"].main,
+          gradients[sidenavColor || "dark"].state
+        )
       : transparent.main,
-    color:
-      (transparentSidenav && !darkMode && !active) || (whiteSidenav && !active)
-        ? dark.main
-        : white.main,
+    color: white.main,
     display: "flex",
     alignItems: "center",
-    width: "100%",
-    padding: `${pxToRem(8)} ${pxToRem(10)}`,
-    margin: `${pxToRem(1.5)} ${pxToRem(16)}`,
+    width: miniSidenav ? pxToRem(48) : "calc(100% - 16px)", // 8px margin on each side when expanded
+    padding: miniSidenav ? `${pxToRem(8)} 0` : `${pxToRem(8)} ${pxToRem(10)}`,
+    margin: miniSidenav ? `${pxToRem(1.5)} auto` : `${pxToRem(1.5)} 8px`,
     borderRadius: borderRadius.md,
     cursor: "pointer",
     userSelect: "none",
     whiteSpace: "nowrap",
-    boxShadow: active && !whiteSidenav && !darkMode && !transparentSidenav ? md : "none",
+    boxShadow: "none",
+    justifyContent: miniSidenav ? "center" : "flex-start",
     [breakpoints.up("xl")]: {
       transition: transitions.create(["box-shadow", "background-color"], {
         easing: transitions.easing.easeInOut,
@@ -51,10 +52,7 @@ function collapseItem(theme, ownerState) {
         let backgroundValue;
 
         if (!active) {
-          backgroundValue =
-            transparentSidenav && !darkMode
-              ? grey[300]
-              : rgba(whiteSidenav ? grey[400] : white.main, 0.2);
+          backgroundValue = rgba(white.main, 0.2);
         }
 
         return backgroundValue;
@@ -65,29 +63,37 @@ function collapseItem(theme, ownerState) {
 
 function collapseIconBox(theme, ownerState) {
   const { palette, transitions, borders, functions } = theme;
-  const { transparentSidenav, whiteSidenav, darkMode, active } = ownerState;
+  const { darkMode, active, sidenavColor, miniSidenav } = ownerState;
 
-  const { white, dark } = palette;
+  const { white, dark, gradients } = palette;
   const { borderRadius } = borders;
-  const { pxToRem } = functions;
+  const { pxToRem, linearGradient } = functions;
 
   return {
-    minWidth: pxToRem(32),
+    width: miniSidenav ? pxToRem(48) : pxToRem(32),
+    minWidth: miniSidenav ? pxToRem(48) : pxToRem(32),
     minHeight: pxToRem(32),
-    color:
-      (transparentSidenav && !darkMode && !active) || (whiteSidenav && !active)
-        ? dark.main
-        : white.main,
+    color: white.main,
+    background: active
+      ? linearGradient(
+          gradients[sidenavColor || "dark"].main,
+          gradients[sidenavColor || "dark"].state
+        )
+      : "transparent",
     borderRadius: borderRadius.md,
-    display: "grid",
-    placeItems: "center",
-    transition: transitions.create("margin", {
-      easing: transitions.easing.easeInOut,
-      duration: transitions.duration.standard,
-    }),
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    transition:
+      "width 0.7s cubic-bezier(0.22, 1, 0.36, 1), " +
+      "min-width 0.7s cubic-bezier(0.22, 1, 0.36, 1), " +
+      "background 1.2s cubic-bezier(0.22, 1, 0.36, 1), " +
+      "color 0.7s cubic-bezier(0.22, 1, 0.36, 1), " +
+      "margin 0.7s cubic-bezier(0.22, 1, 0.36, 1)",
 
     "& svg, svg g": {
-      color: transparentSidenav || whiteSidenav ? dark.main : white.main,
+      color: white.main,
+      transition: "color 0.7s cubic-bezier(0.22, 1, 0.36, 1)",
     },
   };
 }

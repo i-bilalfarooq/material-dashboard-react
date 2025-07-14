@@ -79,53 +79,8 @@ function Configurator() {
   }, []);
 
   const handleCloseConfigurator = () => setOpenConfigurator(dispatch, false);
-  const handleTransparentSidenav = () => {
-    setTransparentSidenav(dispatch, true);
-    setWhiteSidenav(dispatch, false);
-  };
-  const handleWhiteSidenav = () => {
-    setWhiteSidenav(dispatch, true);
-    setTransparentSidenav(dispatch, false);
-  };
-  const handleDarkSidenav = () => {
-    setWhiteSidenav(dispatch, false);
-    setTransparentSidenav(dispatch, false);
-  };
   const handleFixedNavbar = () => setFixedNavbar(dispatch, !fixedNavbar);
   const handleDarkMode = () => setDarkMode(dispatch, !darkMode);
-
-  // sidenav type buttons styles
-  const sidenavTypeButtonsStyles = ({
-    functions: { pxToRem },
-    palette: { white, dark, background },
-    borders: { borderWidth },
-  }) => ({
-    height: pxToRem(39),
-    background: darkMode ? background.sidenav : white.main,
-    color: darkMode ? white.main : dark.main,
-    border: `${borderWidth[1]} solid ${darkMode ? white.main : dark.main}`,
-
-    "&:hover, &:focus, &:focus:not(:hover)": {
-      background: darkMode ? background.sidenav : white.main,
-      color: darkMode ? white.main : dark.main,
-      border: `${borderWidth[1]} solid ${darkMode ? white.main : dark.main}`,
-    },
-  });
-
-  // sidenav type active button styles
-  const sidenavTypeActiveButtonStyles = ({
-    functions: { pxToRem, linearGradient },
-    palette: { white, gradients, background },
-  }) => ({
-    height: pxToRem(39),
-    background: darkMode ? white.main : linearGradient(gradients.dark.main, gradients.dark.state),
-    color: darkMode ? background.sidenav : white.main,
-
-    "&:hover, &:focus, &:focus:not(:hover)": {
-      background: darkMode ? white.main : linearGradient(gradients.dark.main, gradients.dark.state),
-      color: darkMode ? background.sidenav : white.main,
-    },
-  });
 
   return (
     <ConfiguratorRoot variant="permanent" ownerState={{ openConfigurator }}>
@@ -205,66 +160,6 @@ function Configurator() {
                 onClick={() => setSidenavColor(dispatch, color)}
               />
             ))}
-          </MDBox>
-        </MDBox>
-
-        <MDBox mt={3} lineHeight={1}>
-          <MDTypography variant="h6">Sidenav Type</MDTypography>
-          <MDTypography variant="button" color="text">
-            Choose between different sidenav types.
-          </MDTypography>
-
-          <MDBox
-            sx={{
-              display: "flex",
-              mt: 2,
-              mr: 1,
-            }}
-          >
-            <MDButton
-              color="dark"
-              variant="gradient"
-              onClick={handleDarkSidenav}
-              disabled={disabled}
-              fullWidth
-              sx={
-                !transparentSidenav && !whiteSidenav
-                  ? sidenavTypeActiveButtonStyles
-                  : sidenavTypeButtonsStyles
-              }
-            >
-              Dark
-            </MDButton>
-            <MDBox sx={{ mx: 1, width: "8rem", minWidth: "8rem" }}>
-              <MDButton
-                color="dark"
-                variant="gradient"
-                onClick={handleTransparentSidenav}
-                disabled={disabled}
-                fullWidth
-                sx={
-                  transparentSidenav && !whiteSidenav
-                    ? sidenavTypeActiveButtonStyles
-                    : sidenavTypeButtonsStyles
-                }
-              >
-                Transparent
-              </MDButton>
-            </MDBox>
-            <MDButton
-              color="dark"
-              variant="gradient"
-              onClick={handleWhiteSidenav}
-              disabled={disabled}
-              fullWidth
-              sx={
-                whiteSidenav && !transparentSidenav
-                  ? sidenavTypeActiveButtonStyles
-                  : sidenavTypeButtonsStyles
-              }
-            >
-              White
-            </MDButton>
           </MDBox>
         </MDBox>
         <MDBox

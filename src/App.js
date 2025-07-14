@@ -50,15 +50,12 @@ import routes from "routes";
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
 
 // Images
-import brandWhite from "assets/images/logo-ct.png";
-import brandDark from "assets/images/logo-ct-dark.png";
 import smileLogo from "assets/images/smile.png";
 import smileLightLogo from "assets/images/smilelightmode.png";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
   const {
-    miniSidenav,
     direction,
     layout,
     openConfigurator,
@@ -94,42 +91,55 @@ export default function App() {
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
 
-  const getRoutes = (allRoutes) =>
-    allRoutes.map((route) => {
+  // Recursive function to generate routes, handling nested collapses
+  const getRoutes = (allRoutes) => {
+    const routesArray = [];
+
+    allRoutes.forEach((route) => {
+      // If the route has a 'collapse' property, it means it's a parent with dropdown items
       if (route.collapse) {
-        return getRoutes(route.collapse);
+        // If the parent route itself has a component, add it as a route
+        if (route.route && route.component) {
+          routesArray.push(
+            <Route exact path={route.route} element={route.component} key={route.key} />
+          );
+        }
+        // Recursively add routes for collapse items
+        routesArray.push(...getRoutes(route.collapse));
+      } else if (route.route) {
+        // If it's a direct route (no collapse), add it
+        routesArray.push(
+          <Route exact path={route.route} element={route.component} key={route.key} />
+        );
       }
-
-      if (route.route) {
-        return <Route exact path={route.route} element={route.component} key={route.key} />;
-      }
-
-      return null;
     });
 
-  const configsButton = (
-    <MDBox
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      width="3.25rem"
-      height="3.25rem"
-      bgColor="white"
-      shadow="sm"
-      borderRadius="50%"
-      position="fixed"
-      right="2rem"
-      bottom="2rem"
-      zIndex={99}
-      color="dark"
-      sx={{ cursor: "pointer" }}
-      onClick={handleConfiguratorOpen}
-    >
-      <Icon fontSize="small" color="inherit">
-        settings
-      </Icon>
-    </MDBox>
-  );
+    return routesArray;
+  };
+
+  // const configsButton = (
+  //   <MDBox
+  //     display="flex"
+  //     justifyContent="center"
+  //     alignItems="center"
+  //     width="3.25rem"
+  //     height="3.25rem"
+  //     bgColor="white"
+  //     shadow="sm"
+  //     borderRadius="50%"
+  //     position="fixed"
+  //     right="2rem"
+  //     bottom="2rem"
+  //     zIndex={99}
+  //     color="dark"
+  //     sx={{ cursor: "pointer" }}
+  //     onClick={handleConfiguratorOpen}
+  //   >
+  //     <Icon fontSize="small" color="inherit">
+  //       settings
+  //     </Icon>
+  //   </MDBox>
+  // );
 
   return direction === "rtl" ? (
     <CacheProvider value={rtlCache}>
@@ -148,7 +158,6 @@ export default function App() {
               routes={routes}
             />
             <Configurator />
-            {configsButton}
           </>
         )}
         {layout === "vr" && <Configurator />}
@@ -174,7 +183,6 @@ export default function App() {
             routes={routes}
           />
           <Configurator />
-          {configsButton}
         </>
       )}
       {layout === "vr" && <Configurator />}
@@ -185,5 +193,3 @@ export default function App() {
     </ThemeProvider>
   );
 }
-// Material Dashboard 2 React contexts
-export { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";

@@ -40,27 +40,24 @@ import SidenavRoot from "examples/Sidenav/SidenavRoot";
 import sidenavLogoLabel from "examples/Sidenav/styles/sidenav";
 
 // Material Dashboard 2 React context
-import {
-  useMaterialUIController,
-  setMiniSidenav,
-  setTransparentSidenav,
-  setWhiteSidenav,
-} from "context";
+import { useMaterialUIController, setMiniSidenav } from "context";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
-  const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
+  const {
+    miniSidenav,
+    layout,
+    openSidenav,
+    darkMode,
+    transparentSidenav,
+    whiteSidenav,
+    sidenavColor,
+  } = controller;
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "");
 
   // Restore original text colors
   let textColor = "white";
-
-  if (transparentSidenav || (whiteSidenav && !darkMode)) {
-    textColor = "dark";
-  } else if (whiteSidenav && darkMode) {
-    textColor = "inherit";
-  }
 
   useEffect(() => {
     // Always start with mini sidenav
@@ -76,71 +73,104 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   };
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
-  const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, href, route }) => {
-    let returnValue;
+  const renderRoutes = routes.map(
+    ({ type, name, icon, title, noCollapse, key, href, route, collapse }) => {
+      let returnValue;
 
-    if (type === "collapse") {
-      returnValue = href ? (
-        <Link
-          href={href}
-          key={key}
-          target="_blank"
-          rel="noreferrer"
-          sx={{ textDecoration: "none" }}
-        >
-          <SidenavCollapse
-            name={name}
-            icon={icon}
-            active={key === collapseName}
-            noCollapse={noCollapse}
+      if (type === "collapse") {
+        // If the item has a 'collapse' property and is not explicitly noCollapse, it's a dropdown parent.
+        // Otherwise, it's a regular navigation link.
+        if (collapse && !noCollapse) {
+          // Determine if any child is active
+          const isOpen = collapse.some(
+            (item) =>
+              item.route === location.pathname ||
+              (item.collapse &&
+                item.collapse.some((subItem) => subItem.route === location.pathname))
+          );
+          returnValue = (
+            <SidenavCollapse
+              key={key}
+              name={name}
+              icon={icon}
+              active={key === collapseName || isOpen}
+              open={isOpen}
+              collapse={collapse} // Pass the collapse array for dropdowns
+              route={route} // Pass the route for active state logic
+            />
+          );
+        } else {
+          // Regular navigation item (no dropdown)
+          returnValue = href ? (
+            <Link
+              href={href}
+              key={key}
+              target="_blank"
+              rel="noreferrer"
+              sx={{ textDecoration: "none" }}
+            >
+              <SidenavCollapse
+                name={name}
+                icon={icon}
+                active={key === collapseName}
+                noCollapse={noCollapse}
+                route={route}
+              />
+            </Link>
+          ) : (
+            <NavLink key={key} to={route}>
+              <SidenavCollapse
+                name={name}
+                icon={icon}
+                active={key === collapseName}
+                noCollapse={noCollapse}
+                route={route}
+              />
+            </NavLink>
+          );
+        }
+      } else if (type === "title") {
+        returnValue = (
+          <MDTypography
+            key={key}
+            color={textColor}
+            display="block"
+            variant="caption"
+            fontWeight="bold"
+            textTransform="uppercase"
+            pl={3}
+            mt={2}
+            mb={1}
+            ml={1}
+          >
+            {title}
+          </MDTypography>
+        );
+      } else if (type === "divider") {
+        returnValue = (
+          <Divider
+            key={key}
+            light={
+              (!darkMode && !transparentSidenav && !whiteSidenav) ||
+              (darkMode && !transparentSidenav && whiteSidenav)
+            }
           />
-        </Link>
-      ) : (
-        <NavLink key={key} to={route}>
-          <SidenavCollapse name={name} icon={icon} active={key === collapseName} />
-        </NavLink>
-      );
-    } else if (type === "title") {
-      returnValue = (
-        <MDTypography
-          key={key}
-          color={textColor}
-          display="block"
-          variant="caption"
-          fontWeight="bold"
-          textTransform="uppercase"
-          pl={3}
-          mt={2}
-          mb={1}
-          ml={1}
-        >
-          {title}
-        </MDTypography>
-      );
-    } else if (type === "divider") {
-      returnValue = (
-        <Divider
-          key={key}
-          light={
-            (!darkMode && !whiteSidenav && !transparentSidenav) ||
-            (darkMode && !transparentSidenav && whiteSidenav)
-          }
-        />
-      );
-    }
+        );
+      }
 
-    return returnValue;
-  });
+      return returnValue;
+    }
+  );
 
   return (
     <SidenavRoot
       {...rest}
       variant="permanent"
-      ownerState={{ transparentSidenav, whiteSidenav, miniSidenav, darkMode }}
+      ownerState={{ miniSidenav, darkMode, sidenavColor }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <MDBox pt={2} pb={0} px={4} textAlign="center">
+      <MDBox pt={2} pb={0} textAlign="center" px={1}>
         <MDBox
           display={{ xs: "block", xl: "none" }}
           position="absolute"
@@ -159,6 +189,10 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           display="flex"
           alignItems="center"
           justifyContent={miniSidenav ? "center" : "flex-start"}
+          sx={{
+            marginLeft: 0,
+            transition: "margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+          }}
           width="100%"
         >
           {brand && (
@@ -188,7 +222,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       </MDBox>
       <Divider
         light={
-          (!darkMode && !whiteSidenav && !transparentSidenav) ||
+          (!darkMode && !transparentSidenav && !whiteSidenav) ||
           (darkMode && !transparentSidenav && whiteSidenav)
         }
       />
@@ -201,7 +235,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 Sidenav.defaultProps = {
   color: "info",
   brand: "",
-  brandName: "AlSaada ERP", // <-- Already set to AlSaada ERP
+  brandName: "AlSaada ERP",
 };
 
 // Typechecking props for the Sidenav

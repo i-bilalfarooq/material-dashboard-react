@@ -35,7 +35,7 @@ const sidenav = {
       width: pxToRem(250),
       backgroundColor: white.main,
       height: `calc(100vh - ${pxToRem(32)})`,
-      margin: pxToRem(16),
+      margin: pxToRem(20),
       borderRadius: borderRadius.xl,
       border: "none",
     },

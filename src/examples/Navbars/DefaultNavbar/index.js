@@ -24,6 +24,7 @@ import PropTypes from "prop-types";
 // @mui material components
 import Container from "@mui/material/Container";
 import Icon from "@mui/material/Icon";
+import IconButton from "@mui/material/IconButton";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -38,10 +39,10 @@ import DefaultNavbarMobile from "examples/Navbars/DefaultNavbar/DefaultNavbarMob
 import breakpoints from "assets/theme/base/breakpoints";
 
 // Material Dashboard 2 React context
-import { useMaterialUIController } from "context";
+import { useMaterialUIController, setOpenConfigurator } from "context";
 
 function DefaultNavbar({ transparent, light, action }) {
-  const [controller] = useMaterialUIController();
+  const [controller, dispatch] = useMaterialUIController();
   const { darkMode } = controller;
 
   const [mobileNavbar, setMobileNavbar] = useState(false);
@@ -128,6 +129,14 @@ function DefaultNavbar({ transparent, light, action }) {
             route="/authentication/sign-in"
             light={light}
           />
+          <IconButton
+            size="small"
+            color="inherit"
+            onClick={() => setOpenConfigurator(dispatch, true)}
+            aria-label="Open settings"
+          >
+            <Icon>settings</Icon>
+          </IconButton>
         </MDBox>
         {action &&
           (action.type === "internal" ? (

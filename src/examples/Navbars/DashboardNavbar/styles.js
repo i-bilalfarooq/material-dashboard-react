@@ -22,26 +22,24 @@ function navbar(theme, ownerState) {
   const { borderRadius } = borders;
 
   return {
-    boxShadow: transparentNavbar || absolute ? "none" : navbarBoxShadow,
-    backdropFilter: transparentNavbar || absolute ? "none" : `saturate(200%) blur(${pxToRem(30)})`,
+    boxShadow: transparentNavbar || absolute ? "none" : "0 4px 24px 0 rgba(0,0,0,0.10)",
+    backdropFilter: transparentNavbar || absolute ? "none" : `saturate(200%) blur(${pxToRem(40)})`,
     backgroundColor:
       transparentNavbar || absolute
         ? `${transparent.main} !important`
-        : rgba(darkMode ? background.default : white.main, 0.8),
-
+        : rgba(darkMode ? background.default : white.main, 0.92),
+    border: transparentNavbar || absolute ? "none" : `1.5px solid rgba(0,0,0,0.08)`,
     color: () => {
-      let color;
-
-      if (light) {
-        color = white.main;
-      } else if (transparentNavbar) {
-        color = text.main;
-      } else {
-        color = dark.main;
+      if (!transparentNavbar && !absolute) {
+        return palette.black.main;
       }
-
-      return color;
+      // When glassmorphic, use theme accent color
+      if (ownerState.sidenavColor && palette.gradients[ownerState.sidenavColor]) {
+        return palette.gradients[ownerState.sidenavColor].main;
+      }
+      return darkMode ? white.main : palette.black.main;
     },
+    transition: "color 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
     top: absolute ? 0 : pxToRem(12),
     minHeight: pxToRem(75),
     display: "grid",

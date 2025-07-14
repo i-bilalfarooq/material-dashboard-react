@@ -21,42 +21,43 @@ export default styled(Drawer)(({ theme, ownerState }) => {
   const { palette, boxShadows, transitions, breakpoints, functions } = theme;
   const { transparentSidenav, whiteSidenav, miniSidenav, darkMode } = ownerState;
 
-  const sidebarWidth = 250;
+  const sidebarWidth = 200;
   const { transparent, gradients, white, background } = palette;
   const { xxl } = boxShadows;
   const { pxToRem, linearGradient } = functions;
 
   // Fixed background calculation
   let backgroundValue;
-  if (darkMode) {
-    backgroundValue = background.sidenav;
-  } else if (transparentSidenav) {
+  if (transparentSidenav) {
     backgroundValue = transparent.main;
   } else if (whiteSidenav) {
     backgroundValue = white.main;
   } else {
-    backgroundValue = linearGradient(gradients.dark.main, gradients.dark.state);
+    backgroundValue = linearGradient("#000", gradients[ownerState.sidenavColor || "dark"].main);
   }
 
   // styles for the sidenav when miniSidenav={false}
   const drawerOpenStyles = () => ({
     background: backgroundValue,
     transform: "translateX(0)",
-    transition: transitions.create("transform", {
-      easing: transitions.easing.sharp,
-      duration: transitions.duration.shorter,
-    }),
-
+    height: "calc(100vh - 48px)",
+    boxSizing: "border-box",
+    paddingTop: 3, // theme spacing unit, e.g., 24px
+    paddingBottom: 3, // theme spacing unit, e.g., 24px
+    boxShadow: "0 4px 24px 0 rgba(0,0,0,0.12)", // subtle drop shadow
+    transition:
+      "width 0.7s cubic-bezier(0.22, 1, 0.36, 1), background 1.2s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)",
     [breakpoints.up("xl")]: {
-      boxShadow: transparentSidenav ? "none" : xxl,
-      marginBottom: transparentSidenav ? 0 : "inherit",
+      boxShadow: transparentSidenav ? "none" : "0 4px 24px 0 rgba(0,0,0,0.12)",
+      height: "calc(100vh - 48px)",
+      boxSizing: "border-box",
+      paddingTop: transparentSidenav ? 0 : 3, // theme spacing unit
+      paddingBottom: transparentSidenav ? 0 : 3, // theme spacing unit
       left: "0",
       width: sidebarWidth,
       transform: "translateX(0)",
-      transition: transitions.create(["width", "background-color"], {
-        easing: transitions.easing.sharp,
-        duration: transitions.duration.enteringScreen,
-      }),
+      transition:
+        "width 0.7s cubic-bezier(0.22, 1, 0.36, 1), background 1.2s cubic-bezier(0.22, 1, 0.36, 1)",
     },
   });
 
@@ -66,22 +67,31 @@ export default styled(Drawer)(({ theme, ownerState }) => {
     width: pxToRem(80),
     overflowX: "hidden",
     transform: "translateX(0)",
-    transition: transitions.create(["width", "background-color"], {
-      easing: transitions.easing.sharp,
-      duration: transitions.duration.shorter,
-    }),
-
+    height: "calc(100vh - 48px)",
+    boxSizing: "border-box",
+    paddingTop: 3, // theme spacing unit, e.g., 24px
+    paddingBottom: 3, // theme spacing unit, e.g., 24px
+    transition:
+      "width 0.7s cubic-bezier(0.22, 1, 0.36, 1), background 1.2s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)",
     [breakpoints.up("xl")]: {
       boxShadow: transparentSidenav ? "none" : xxl,
       width: pxToRem(80),
+      height: "calc(100vh - 48px)",
+      boxSizing: "border-box",
+      paddingTop: transparentSidenav ? 0 : 3, // theme spacing unit
+      paddingBottom: transparentSidenav ? 0 : 3, // theme spacing unit
     },
   });
 
   return {
     "& .MuiDrawer-paper": {
       boxShadow: xxl,
-      border: "none",
+      // Remove extra padding to reduce gap
       ...(miniSidenav ? miniSidenavStyles() : drawerOpenStyles()),
+      scrollbarWidth: "none", // Firefox
+      "&::-webkit-scrollbar": {
+        display: "none", // Chrome, Safari
+      },
     },
   };
 });
