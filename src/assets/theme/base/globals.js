@@ -21,6 +21,14 @@ const { info, dark } = colors;
 const globals = {
   html: {
     scrollBehavior: "smooth",
+    // overflowY: "hidden", // Allow scrolling
+  },
+  body: {
+    // overflowY: "hidden", // Allow scrolling
+  },
+  // Hide scrollbar for Webkit browsers
+  "body::-webkit-scrollbar, html::-webkit-scrollbar": {
+    display: "none",
   },
   "*, *::before, *::after": {
     margin: 0,
