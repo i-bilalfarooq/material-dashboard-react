@@ -13,8 +13,9 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 function navbar(theme, ownerState) {
+  const { miniSidenav, ...rest } = ownerState;
   const { palette, boxShadows, functions, transitions, breakpoints, borders } = theme;
-  const { transparentNavbar, absolute, light, darkMode } = ownerState;
+  const { transparentNavbar, absolute, light, darkMode } = rest;
 
   const { dark, white, text, transparent, background } = palette;
   const { navbarBoxShadow } = boxShadows;
@@ -39,10 +40,19 @@ function navbar(theme, ownerState) {
       }
       return darkMode ? white.main : palette.black.main;
     },
-    transition: "color 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
-    top: absolute ? 0 : pxToRem(12),
-    minHeight: pxToRem(75),
-    display: "grid",
+    transition:
+      "color 0.4s cubic-bezier(0.22, 1, 0.36, 1), " +
+      "left 0.7s cubic-bezier(0.22, 1, 0.36, 1), " +
+      "width 0.7s cubic-bezier(0.22, 1, 0.36, 1)",
+    position: "fixed",
+    top: 0,
+    minHeight: pxToRem(65),
+    zIndex: 1201, // Ensure AppBar is above other content
+    // Remove display: "grid" to avoid breaking sticky
+    // display: "grid",
+    top: 32,
+    left: miniSidenav ? pxToRem(100) : pxToRem(220),
+    width: miniSidenav ? "calc(100% - 70px - 32px)" : "calc(100% - 190px - 32px)",
     alignItems: "center",
     borderRadius: borderRadius.xl,
     paddingTop: pxToRem(8),

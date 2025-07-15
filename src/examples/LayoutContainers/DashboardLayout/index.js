@@ -44,8 +44,9 @@ function DashboardLayout({ children }) {
       sx={({ palette, functions: { linearGradient } }) => ({
         display: "flex",
         flexDirection: "row",
-        width: "100vw",
+        width: "100%", // Changed from 100vw to 100%
         minHeight: "100vh",
+        overflowX: "hidden", // Prevent horizontal scroll
         background: `linear-gradient(360deg,
           ${darkMode ? palette.background.sidenav : palette.white.main} 40%,
           ${darkMode ? palette.background.sidenav : palette.white.main} 10%,
@@ -65,7 +66,8 @@ function DashboardLayout({ children }) {
           flex: 1,
           minWidth: 0,
           boxSizing: "border-box",
-          padding: 4, // 32px (theme spacing unit)
+          padding: 4, // left/right/bottom
+          paddingTop: "120px", // Add top padding for fixed header (65px header + 32px margin)
           transition:
             "margin-left 0.7s cubic-bezier(0.22, 1, 0.36, 1), " +
             "padding 0.7s cubic-bezier(0.22, 1, 0.36, 1), " +

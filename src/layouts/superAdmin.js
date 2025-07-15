@@ -6,7 +6,7 @@ import MDButton from "components/MDButton";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import MDTypography from "components/MDTypography";
-import DefaultBarChart from "examples/Charts/BarCharts/VerticalBarChart";
+import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 import { useMaterialUIController } from "context";
 
@@ -81,97 +81,57 @@ export default function SuperAdmin() {
           Add
         </MDButton>
       </MDBox>
-      <MDBox py={3}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
+      <MDBox py={1}>
+        <Grid container spacing={3} justifyContent="center">
+          <Grid item xs={12} md={6} lg={4}>
+            <MDBox mb={4}>
+              <ReportsBarChart
                 color="info"
-                icon="apartment"
+                chart={branchesData}
                 title="Branches"
-                count={22}
-                percentage={{ color: "success", amount: "+5%", label: "since last month" }}
+                description="Branch distribution"
+                date="Updated just now"
+                height="180px"
               />
             </MDBox>
           </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
+          <Grid item xs={12} md={6} lg={4}>
+            <MDBox mb={4}>
+              <ReportsBarChart
                 color="primary"
-                icon="groups"
+                chart={departmentsData}
                 title="Departments"
-                count={14}
-                percentage={{ color: "success", amount: "+2%", label: "since last month" }}
+                description="Department breakdown"
+                date="Updated just now"
+                height="180px"
               />
             </MDBox>
           </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
+          <Grid item xs={12} md={6} lg={4}>
+            <MDBox mb={4}>
+              <ReportsBarChart
                 color="success"
-                icon="person"
+                chart={employeesData}
                 title="Employees"
-                count={150}
-                percentage={{ color: "success", amount: "+10%", label: "since last month" }}
+                description="Yearly employee growth"
+                date="Updated just now"
+                height="180px"
               />
             </MDBox>
           </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
+          <Grid item xs={12} md={6} lg={4}>
+            <MDBox mb={4}>
+              <ReportsBarChart
                 color="dark"
-                icon="badge"
+                chart={rolesData}
                 title="Roles"
-                count={8}
-                percentage={{ color: "success", amount: "+1", label: "new role" }}
+                description="Role distribution"
+                date="Updated just now"
+                height="180px"
               />
             </MDBox>
           </Grid>
         </Grid>
-        <MDBox mt={4.5}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={3}>
-              <Card>
-                <MDBox p={2}>
-                  <MDTypography variant="h6" mb={1}>
-                    Branches
-                  </MDTypography>
-                  <DefaultBarChart chart={branchesData} height="180px" />
-                </MDBox>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-              <Card>
-                <MDBox p={2}>
-                  <MDTypography variant="h6" mb={1}>
-                    Departments
-                  </MDTypography>
-                  <DefaultBarChart chart={departmentsData} height="180px" />
-                </MDBox>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-              <Card>
-                <MDBox p={2}>
-                  <MDTypography variant="h6" mb={1}>
-                    Employees
-                  </MDTypography>
-                  <DefaultBarChart chart={employeesData} height="180px" />
-                </MDBox>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
-              <Card>
-                <MDBox p={2}>
-                  <MDTypography variant="h6" mb={1}>
-                    Roles
-                  </MDTypography>
-                  <DefaultBarChart chart={rolesData} height="180px" />
-                </MDBox>
-              </Card>
-            </Grid>
-          </Grid>
-        </MDBox>
       </MDBox>
     </DashboardLayout>
   );

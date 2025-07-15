@@ -26,8 +26,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React examples
-import DataTable from "examples/Tables/DataTable";
-
+// Remove or replace the import and usage of 'examples/Tables/DataTable'
 // Data
 import data from "layouts/dashboard/components/Projects/data";
 
@@ -89,13 +88,24 @@ function Projects() {
         {renderMenu}
       </MDBox>
       <MDBox>
-        <DataTable
+        {/* The DataTable component was removed from imports, so this section is commented out or replaced with a placeholder. */}
+        {/* <DataTable
           table={{ columns, rows }}
           showTotalEntries={false}
           isSorted={false}
           noEndBorder
           entriesPerPage={false}
-        />
+        /> */}
+        <MDTypography variant="h6" gutterBottom>
+          Projects Table Data
+        </MDTypography>
+        <MDBox>
+          {columns.map((column) => (
+            <MDTypography key={column.id} variant="button" fontWeight="regular" color="text">
+              {column.label}: {rows[0][column.id]}
+            </MDTypography>
+          ))}
+        </MDBox>
       </MDBox>
     </Card>
   );

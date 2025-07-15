@@ -22,7 +22,7 @@ import CRM from "layouts/crm";
 import Accounts from "layouts/accounts";
 import Operations from "layouts/operations";
 import Manager from "layouts/manager";
-import Files from "layouts/files";
+// import Files from "layouts/files"; // Not used in this update
 // import Tables from "layouts/tables"; // Not used in this update
 // import Billing from "layouts/billing"; // Not used in this update
 // import RTL from "layouts/rtl"; // Not used in this update
@@ -518,15 +518,6 @@ const routes = [
         icon: <AssignmentIcon />,
       },
     ],
-  },
-  {
-    type: "collapse",
-    name: "Files",
-    key: "files",
-    icon: <FolderIcon />,
-    route: "/files",
-    component: <Files />,
-    noCollapse: true, // This item does not have a dropdown
   },
 ];
 

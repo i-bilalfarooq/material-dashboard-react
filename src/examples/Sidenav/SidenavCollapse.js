@@ -78,6 +78,17 @@ function SidenavCollapse({ icon, name, active, collapse, route, ...rest }) {
     }
   }, [location.pathname, collapse, open]);
 
+  useEffect(() => {
+    if (!miniSidenav && collapse && Array.isArray(collapse)) {
+      const isActiveSubItem = collapse.some(
+        (item) =>
+          item.route === location.pathname ||
+          (item.collapse && item.collapse.some((subItem) => subItem.route === location.pathname))
+      );
+      setOpen(isActiveSubItem);
+    }
+  }, [miniSidenav, location.pathname, collapse]);
+
   // Close dropdown when sidenav collapses
   useEffect(() => {
     if (miniSidenav && open) {

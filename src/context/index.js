@@ -42,7 +42,8 @@ function reducer(state, action) {
       return { ...state, transparentNavbar: action.value };
     }
     case "FIXED_NAVBAR": {
-      return { ...state, fixedNavbar: action.value };
+      // Ignore any attempts to set fixedNavbar to false; always keep it true
+      return { ...state, fixedNavbar: true };
     }
     case "OPEN_CONFIGURATOR": {
       return { ...state, openConfigurator: action.value };

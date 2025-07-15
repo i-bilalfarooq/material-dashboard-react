@@ -116,7 +116,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const accentColor = (theme) =>
     !transparentNavbar
       ? theme.palette.gradients[sidenavColor || "info"].main
-      : theme.palette.black.main;
+      : theme.palette.white.main;
   const iconsStyle = (theme) => ({
     color: accentColor(theme),
     transition: "color 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
@@ -130,7 +130,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
     <AppBar
       position={absolute ? "absolute" : navbarType}
       color="inherit"
-      sx={(theme) => navbar(theme, { transparentNavbar, absolute, light, darkMode })}
+      sx={(theme) => navbar(theme, { transparentNavbar, absolute, light, darkMode, miniSidenav })}
     >
       <Toolbar
         sx={(theme) => ({
@@ -160,8 +160,8 @@ function DashboardNavbar({ absolute, light, isMini }) {
             icon="home"
             title={route[route.length - 1] ? route[route.length - 1] : ""}
             route={route}
-            light={light}
-            color={transparentNavbar ? "black" : sidenavColor}
+            light={transparentNavbar} // White when transparent, theme color when not
+            color={sidenavColor}
           />
         </MDBox>
         <MDTypography
@@ -181,9 +181,11 @@ function DashboardNavbar({ absolute, light, isMini }) {
           }}
         >
           {route[route.length - 1] &&
-            (
-              route[route.length - 1].charAt(0).toUpperCase() + route[route.length - 1].slice(1)
-            ).toUpperCase()}
+            (route[route.length - 1].toLowerCase() === "it"
+              ? "IT"
+              : (
+                  route[route.length - 1].charAt(0).toUpperCase() + route[route.length - 1].slice(1)
+                ).toUpperCase())}
         </MDTypography>
         {!isMini && (
           <MDBox display="flex" alignItems="center" flex="0 0 auto" gap={2}>
